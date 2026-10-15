@@ -1,0 +1,98 @@
+[
+  {
+    "machine_id": "Washer-W1",
+    "building": "Weinstein",
+    "type": "Washer",
+    "status": "In-Use",
+    "current_user": "student_01",
+    "users_in_queue": []
+  },
+  {
+    "machine_id": "Washer-W2",
+    "building": "Weinstein",
+    "type": "Washer",
+    "status": "Available",
+    "current_user": null,
+    "users_in_queue": []
+  },
+  {
+    "machine_id": "Dryer-W1",
+    "building": "Weinstein",
+    "type": "Dryer",
+    "status": "Available",
+    "current_user": null,
+    "users_in_queue": []
+  },
+  {
+    "machine_id": "Dryer-W2",
+    "building": "Weinstein",
+    "type": "Dryer",
+    "status": "Available",
+    "current_user": null,
+    "users_in_queue": []
+  },
+  {
+    "machine_id": "Washer-U1",
+    "building": "UHall",
+    "type": "Washer",
+    "status": "Available",
+    "current_user": null,
+    "users_in_queue": []
+  },
+  {
+    "machine_id": "Washer-U2",
+    "building": "UHall",
+    "type": "Washer",
+    "status": "Available",
+    "current_user": null,
+    "users_in_queue": []
+  },
+  {
+    "machine_id": "Dryer-U1",
+    "building": "UHall",
+    "type": "Dryer",
+    "status": "Available",
+    "current_user": null,
+    "users_in_queue": []
+  },
+  {
+    "machine_id": "Dryer-U2",
+    "building": "UHall",
+    "type": "Dryer",
+    "status": "Available",
+    "current_user": null,
+    "users_in_queue": []
+  },
+  {
+    "machine_id": "Washer-P1",
+    "building": "Palladium",
+    "type": "Washer",
+    "status": "Available",
+    "current_user": null,
+    "users_in_queue": []
+  },
+  {
+    "machine_id": "Washer-P2",
+    "building": "Palladium",
+    "type": "Washer",
+    "status": "Available",
+    "current_user": null,
+    "users_in_queue": []
+  },
+  {
+    "machine_id": "Dryer-P1",
+    "building": "Palladium",
+    "type": "Dryer",
+    "status": "In-Use",
+    "current_user": "student_02",
+    "users_in_queue": []
+  },
+  {
+    "machine_id": "Dryer-P2",
+    "building": "Palladium",
+    "type": "Dryer",
+    "status": "Available",
+    "current_user": null,
+    "users_in_queue": []
+  }
+]

@@ -1,0 +1,28 @@
+[
+  {
+    "user_id": "admin_01",
+    "name": "Sarah Admin",
+    "phone": "212-555-0100",
+    "password": "adminpassword123",
+    "building": "Weinstein",
+    "role": "admin"
+  },
+  {
+    "user_id": "tech_01",
+    "name": "Mike Technician",
+    "phone": "212-555-0200",
+    "password": "techpassword123",
+    "building": "All",
+    "role": "technician"
+  },
+  {
+    "user_id": "student_01",
+    "name": "Alex Smith",
+    "phone": "212-555-0301"
+  },
+  {
+    "user_id": "student_02",
+    "name": "Jordan Lee",
+    "phone": "212-555-0302"
+  }
+]
