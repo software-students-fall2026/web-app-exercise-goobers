@@ -4,11 +4,11 @@ A little exercise to build a web application following an agile development proc
 
 ## Product vision statement
 
-See instructions. Delete this line and place the Product Vision Statement here.
+Our team's product is a laundry management app that enables NYU students to join digital waitlists for dorm washing machines and dryers while empowering building admins and repair technicians to streamline machine status communication.
 
-## User stories
+## User Stories
+User Stories: [View GitHub Issues / User Stories](https://github.com/software-students-fall2026/web-app-exercise-goobers/issues)
 
-See instructions. Delete this line and place a link to the user stories here.
 
 ## Steps necessary to run the software
 
@@ -16,4 +16,4 @@ See instructions. Delete this line and place instructions to download, configure
 
 ## Task boards
 
-See instructions. Delete this line and place a link to the task boards here.
+Sprint Task Boards: [GitHub Projects Page](https://github.com/software-students-fall2026/web-app-exercise-goobers/projects)
