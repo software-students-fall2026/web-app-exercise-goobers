@@ -20,11 +20,11 @@ db = client[os.getenv("MONGO_DBNAME")]
 def seed_db():
     #seed users
     base_dir = os.path.dirname(__file__)
-    if db.user.count_documents({}) == 0:
+    if db.users.count_documents({}) == 0:
         users_file = os.path.join(base_dir, "users.json")
         if os.path.exists(users_file):
             with open(users_file, 'r') as f:
-                db.user.insert_many(json.load(f))
+                db.users.insert_many(json.load(f))
                 print("Users seeded successfully.")
 
     if db.machines.count_documents({}) == 0:
