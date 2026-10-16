@@ -9,18 +9,22 @@
             Create account to manage your laundry and check machine availability.
         </p>
 
-        <form action="/login" method="POST">
+        {% if error %}
+            <p role="alert">{{ error }}</p>
+        {% endif %}
+
+        <form action="/register" method="POST">
             <label for="username">Username</label>
             <input
-                type="username"
+                type="text"
                 id="username"
                 name="username"
                 placeholder="abc1234"
-                autocomplete="email"
+                autocomplete="username"
                 required
             >
 
-            <label for="tel">Phone Number</label>
+            <label for="phone">Phone Number</label>
             <input
                 type="tel"
                 id="phone"
@@ -30,11 +34,11 @@
                 required
             >
 
-            <button type="submit">Sign In</button>
+            <button type="submit">Create Account</button>
         </form>
 
         <p class="signup">
-            New here? <a href="/register">Create an account</a>
+            Already have an account? <a href="/login">Sign in</a>
         </p>
     </main>
 </body>
