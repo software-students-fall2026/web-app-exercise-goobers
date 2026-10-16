@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Profile | Laundry App</title>
+</head>
+<body>
+    <main class="profile-container">
+        <h1>Your Profile</h1>
+        <p>View and update your username and phone number.</p>
+
+        {% if error %}
+            <p role="alert">{{ error }}</p>
+        {% endif %}
+
+        <form action="/profile" method="POST">
+            <label for="username">Username</label>
+            <input
+                type="text"
+                id="username"
+                name="username"
+                value="{{ user.user_id }}"
+                autocomplete="username"
+                maxlength="50"
+                required
+            >
+
+            <label for="phone">Phone Number</label>
+            <input
+                type="tel"
+                id="phone"
+                name="phone"
+                value="{{ user.phone }}"
+                autocomplete="tel"
+                required
+            >
+
+            <button type="submit">Save Changes</button>
+        </form>
+
+        <form action="/" method="GET">
+            <button type="submit">Back to Home</button>
+        </form>
+
+        <form action="/logout" method="POST">
+            <button type="submit">Log Out</button>
+        </form>
+    </main>
+</body>
+</html>
