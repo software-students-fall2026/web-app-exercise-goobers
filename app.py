@@ -40,10 +40,19 @@ def seed_db():
 with app.app_context():
     seed_db()
 
-#home page / screen
+#login screen
 @app.route('/', methods=['GET'])
 def home_screen():
     return render_template("index.html")
+
+#laundry building home page
+@app.route('/buidling_home_page', methods=['GET'])
+def machine_home_screen():
+    return render_template("building_home_page.html")
+
+# jade write these
+# add yourself to a queue
+# delete yourself from the queue
 
 @app.route('/api/machines', methods=['GET'])
 def get_machines():
@@ -89,8 +98,6 @@ def reset_db_endpoint():
 #Read - The users can read from the list of washing machines or dryers at a building
 #Update - admins can update the status of machines, if they need repairs or what not
 #Delete - admins can delete washing machines or dryers if they are no longer there
-
-
 
 
 if __name__ == '__main__':
