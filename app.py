@@ -20,6 +20,10 @@ load_dotenv()
 
 app = Flask(__name__)
 
+#configure this session
+app.config["SECRET_KEY"] = os.environ["SECRET_KEY"]
+app.config["SESSION_COOKIE_HTTPONLY"] = True
+app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
 
 #connect to MongoDB
 client = pymongo.MongoClient(os.getenv("MONGO_URI"), tlsCAFile=certifi.where())
