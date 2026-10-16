@@ -107,15 +107,137 @@ def reset_db_endpoint():
 
     return jsonify({"message": f"Database reset successfully. {user_count} users and {machine_count} machines added."})
 
-@app.route("/login")
-def login_page():
-    return render_template("login.html")
-@app.route("/register")
+#login and register (user, profile section)
+def normalize_phone(value):
+    return re.sub(r"[\s().+-]", "", value.strip())
+
+
+def read_account_form():
+    user_id = request.form.get("username", "").strip()
+    phone = normalize_phone(request.form.get("phone", ""))
+
+    if not re.fullmatch(r"[A-Za-z0-9_]{1,50}", user_id):
+        return None, None, (
+            "Username must contain 1–50 letters, numbers, or underscores."
+        )
+
+    if not re.fullmatch(r"[0-9]{10}", phone):
+        return None, None, "Enter a 10-digit phone number."
+
+    return user_id, phone, None
+
+
+def current_user():
+    mongo_id = session.get("user_id")
+
+    if not isinstance(mongo_id, str):
+        return None
+
+    try:
+        return db.users.find_one({"_id": ObjectId(mongo_id)})
+    except InvalidId:
+        return None
+
+
+@app.route("/register", methods=["GET", "POST"])
 def register():
-    return render_template("create-account.html")
+    if request.method == "GET":
+        return render_template("create-account.html")
+
+    user_id, phone, error = read_account_form()
+
+    if error:
+        return render_template("create-account.html", error=error), 400
+
+    try:
+        result = db.users.insert_one({
+            "user_id": user_id,
+            "phone": phone,
+            "role": "student"
+        })
+    except DuplicateKeyError:
+        return render_template(
+            "create-account.html",
+            error="That username is already taken."
+        ), 409
+
+    session.clear()
+    session["user_id"] = str(result.inserted_id)
+
+    return redirect(url_for("profile"))
 
 
-# CRUD/Flask:
+@app.route("/login", methods=["GET", "POST"])
+def login_page():
+    if request.method == "GET":
+        return render_template("login.html")
+
+    user_id, phone, error = read_account_form()
+
+    if error:
+        return render_template("login.html", error=error), 400
+
+    user = db.users.find_one({"user_id": user_id})
+
+    # Normalizing here also supports existing hyphenated seed numbers.
+    if (
+        user is None
+        or normalize_phone(str(user.get("phone", ""))) != phone
+    ):
+        return render_template(
+            "login.html",
+            error="No account matches that username and phone number."
+        ), 400
+
+    session.clear()
+    session["user_id"] = str(user["_id"])
+
+    return redirect(url_for("profile"))
+
+
+@app.route("/profile", methods=["GET", "POST"])
+def profile():
+    user = current_user()
+
+    if user is None:
+        session.clear()
+        return redirect(url_for("login_page"))
+
+    if request.method == "POST":
+        user_id, phone, error = read_account_form()
+
+        if error:
+            return render_template(
+                "profile.html", user=user, error=error
+            ), 400
+
+        try:
+            db.users.update_one(
+                {"_id": user["_id"]},
+                {"$set": {
+                    "user_id": user_id,
+                    "phone": phone
+                }}
+            )
+        except DuplicateKeyError:
+            return render_template(
+                "profile.html",
+                user=user,
+                error="That username is already taken."
+            ), 409
+
+        return redirect(url_for("profile"))
+
+    return render_template("profile.html", user=user)
+
+
+@app.route("/logout", methods=["POST"])
+def logout():
+    session.clear()
+    return redirect(url_for("login_page"))
+
+
+# CRUD/Flask requirement:
 #Create - user can create their account with name and phone number
 #Read - The users can read from the list of washing machines or dryers at a building
 #Update - admins can update the status of machines, if they need repairs or what not
