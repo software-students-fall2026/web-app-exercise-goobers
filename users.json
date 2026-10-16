@@ -3,7 +3,6 @@
     "user_id": "admin_01",
     "name": "Sarah Admin",
     "phone": "212-555-0100",
-    "password": "adminpassword123",
     "building": "Weinstein",
     "role": "admin"
   },
@@ -11,7 +10,6 @@
     "user_id": "tech_01",
     "name": "Mike Technician",
     "phone": "212-555-0200",
-    "password": "techpassword123",
     "building": "All",
     "role": "technician"
   },
