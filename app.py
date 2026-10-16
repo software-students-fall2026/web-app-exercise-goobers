@@ -92,6 +92,13 @@ def reset_db_endpoint():
 
     return jsonify({"message": f"Database reset successfully. {user_count} users and {machine_count} machines added."})
 
+@app.route("/login")
+def login_page():
+    return render_template("login.html")
+@app.route("/register")
+def register():
+    return render_template("create-account.html")
+
 
 # CRUD/Flask:
 #Create - user can create their account with name and phone number
