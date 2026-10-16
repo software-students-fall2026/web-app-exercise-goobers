@@ -53,6 +53,8 @@ def seed_db():
 with app.app_context():
     seed_db()
 
+db.users.create_index("user_id", unique=True)
+
 #login screen
 @app.route('/', methods=['GET'])
 def home_screen():
