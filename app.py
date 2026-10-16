@@ -2,7 +2,7 @@ import json
 import os
 import certifi
 from dotenv import load_dotenv
-from flask import Flask, jsonify
+from flask import Flask, jsonify, render_template
 import pymongo
 
 #Load .evn file
@@ -39,6 +39,11 @@ def seed_db():
 
 with app.app_context():
     seed_db()
+
+#home page / screen
+@app.route('/', methods=['GET'])
+def home_screen():
+    return render_template("index.html")
 
 @app.route('/api/machines', methods=['GET'])
 def get_machines():
@@ -77,6 +82,16 @@ def reset_db_endpoint():
                 machine_count = len(machines)
 
     return jsonify({"message": f"Database reset successfully. {user_count} users and {machine_count} machines added."})
+
+
+# CRUD/Flask:
+#Create - user can create their account with name and phone number
+#Read - The users can read from the list of washing machines or dryers at a building
+#Update - admins can update the status of machines, if they need repairs or what not
+#Delete - admins can delete washing machines or dryers if they are no longer there
+
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
