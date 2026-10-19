@@ -9,6 +9,9 @@ Our team's product is a laundry management app that enables NYU students to join
 ## User Stories
 User Stories: [View GitHub Issues / User Stories](https://github.com/software-students-fall2026/web-app-exercise-goobers/issues)
 
+## Wireframes
+
+![Wireframes](images/wireframes.png)
 
 ## Steps necessary to run the software
 
