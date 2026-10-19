@@ -2,7 +2,7 @@ import json
 import os
 import certifi
 from dotenv import load_dotenv
-from flask import Flask, jsonify, render_template
+from flask import Flask, jsonify, render_template, request
 import pymongo
 
 #Load .evn file
@@ -58,8 +58,6 @@ def register():
 def machine_home_screen():
     return render_template("building_home_page.html")
 
-
-
 #when you click into a building, this displays all the 
 #dynamic route for the building name 
 @app.route('/building/<building_name>')
@@ -69,9 +67,36 @@ def machine_in_building(building_name):
 #routing for the admins now
 @app.route('/admin/machine-form')
 def admin_machine_form():
-    return render_template("admin-machine-form.html") 
+
+    # we have the get the list of machines from mongodb first actually
+    machines = list(db.machines.find({}))
+    return render_template("admin-machine-form.html", machines=machines) 
+
 
 #we need to let admins post too into this form
+@app.route('/admin/machine-form', methods=['POST'])
+def admin_machine_form():
+    building = request.form['building']
+    machine_id = request.form['machine_id']
+    problem = request.form['problem']
+
+    doc = {
+        "building": building,
+        "machine_id": machine_id,
+        "problem": problem,
+        "status": "Open"
+    }
+
+    db.work_requests.insert_one(doc)
+
+    # look into how we can do this
+    # we would need to get the list of machines and make sure we are hitting one that exists
+    # we have to get the data coming in from the html? 
+    # get form data included in the body of the POST request
+    #name = request.form['fname']
+    #message = request.form['fmessage']
+    
+    # do something fabulous with this data here
 
 
 # jade write these
