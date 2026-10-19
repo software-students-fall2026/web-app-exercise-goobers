@@ -12,7 +12,26 @@ User Stories: [View GitHub Issues / User Stories](https://github.com/software-st
 
 ## Steps necessary to run the software
 
-See instructions. Delete this line and place instructions to download, configure, and run the software here.
+### Prerequisites
+
+Make sure you have the following installed on your machine:
+* Python
+* MongoDB
+* Flask
+
+---
+
+### Installation & Setup
+
+1. Clone a copy of the repository to your local machine from GitHub
+
+2. Download the .env files shared in discord team channel
+
+3. Copy and paste the .env file inside your copy of the repository
+
+4. In a your terminal write python app.py and press enter
+
+5. The in the terminal ctrl + click on the web address that appears and the web app will be useable.  
 
 ## Task boards
 
