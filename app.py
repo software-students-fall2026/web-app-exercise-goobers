@@ -40,19 +40,47 @@ def seed_db():
 with app.app_context():
     seed_db()
 
-#login screen
+#just bring to login screen by default
 @app.route('/', methods=['GET'])
 def home_screen():
     return render_template("index.html")
 
-#laundry building home page
-@app.route('/buidling_home_page', methods=['GET'])
+@app.route("/login")
+def login_page():
+    return render_template("login.html")
+
+@app.route("/register")
+def register():
+    return render_template("create-account.html")
+
+#laundry building home page (displays 3 building options)
+@app.route('/building_home_page', methods=['GET'])
 def machine_home_screen():
     return render_template("building_home_page.html")
+
+
+
+#when you click into a building, this displays all the 
+#dynamic route for the building name 
+@app.route('/building/<building_name>')
+def machine_in_building(building_name):
+    return render_template("machines_in_building.html", building_name=building_name)
+
+#routing for the admins now
+@app.route('/admin/machine-form')
+def admin_machine_form():
+    return render_template("admin-machine-form.html") 
+
+#we need to let admins post too into this form
+
 
 # jade write these
 # add yourself to a queue
 # delete yourself from the queue
+
+
+
+#need to let admins delete a machine from a building, will need to access mongodb for this
 
 @app.route('/api/machines', methods=['GET'])
 def get_machines():
@@ -92,12 +120,7 @@ def reset_db_endpoint():
 
     return jsonify({"message": f"Database reset successfully. {user_count} users and {machine_count} machines added."})
 
-@app.route("/login")
-def login_page():
-    return render_template("login.html")
-@app.route("/register")
-def register():
-    return render_template("create-account.html")
+
 
 
 # CRUD/Flask:
