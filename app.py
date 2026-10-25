@@ -35,6 +35,7 @@ def seed_db():
 
 
 #run seed fuction when the app starts
+#temp comment out to test front end
 with app.app_context():
     seed_db()
 
@@ -70,7 +71,6 @@ def machine_in_building(building_name):
 #still need 2 more pages - 1 for edit, 1 for delete.
 
 
-
 #routing for the admins now
 @app.route('/admin/machine-form')
 def admin_machine_form():
@@ -83,7 +83,7 @@ def admin_machine_form():
 
 #we need to let admins post too into this form
 @app.route('/admin/machine-form', methods=['POST'])
-def admin_machine_form():
+def admin_machine_form_post():
     building = request.form['building']
     machine_id = request.form['machine_id']
     problem = request.form['problem']
