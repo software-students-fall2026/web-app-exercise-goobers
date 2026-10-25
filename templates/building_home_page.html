@@ -1,38 +1,27 @@
       
 </head>
+
+<title>Laundry Rooms</title>
 <body>
-   <a href="/building_home_page" class="back-link">
-    &larr; All Buildings
-        </a>
-    <h1>{{ building_name }} Laundry Room</h1>
-    <p>Select a machine to see its current status.</p>
+    <p> Choose your building to get started! </p>
+    <div class="building-list">
+        <article class="building-card">
+            <h3>Palladium</h3>
+            <p>View available machines and check their status.</p>
+            <a href="/building/Palladium">View Laundry Room</a>
+        </article>
 
-    <main>
-        <section> class="machine-section">
-            <h2>Available Machines</h2>
-            <div class="machine-grid">
-            {% for machine in machines %}
-                <div class="machine-card">
-                <h3>Machine {{ machine.machine_id }}</h3>
-                <p class="machine-status">
-                Status:
-                    <span class="status-label
-                    {% if machine.status == 'Available' %} available
-                    {% elif machine.status == 'In Use' %} in-use
-                    {% elif machine.status == 'Out of Order' %} out-of-order
-                    {% endif %}"> {{ machine.status }}
-                    </span>
-                 </p>
-                </div>
-                {% else %}
-                    <p>No machines found in this building.</p>
-                {% endfor %}
-            </div>
+        <article class="building-card">
+            <h3>Building 2</h3>
+            <p>View available machines and check their status.</p>
+            <a href="/building/Weinstein">View Laundry Room</a>
+        </article>
 
-
-        </section> 
-
-    </main>
-
+        <article class="building-card">
+            <h3>Building 3</h3>
+            <p>View available machines and check their status.</p>
+            <a href="/building/UHall">View Laundry Room</a>
+        </article>
+    </div>
 </body>
 </html>
