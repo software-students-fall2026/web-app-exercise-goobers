@@ -72,7 +72,6 @@ def admin_machine_form():
     machines = list(db.machines.find({}))
     return render_template("admin-machine-form.html", machines=machines) 
 
-
 #we need to let admins post too into this form
 @app.route('/admin/machine-form', methods=['POST'])
 def admin_machine_form():
@@ -95,17 +94,15 @@ def admin_machine_form():
     # get form data included in the body of the POST request
     #name = request.form['fname']
     #message = request.form['fmessage']
-    
     # do something fabulous with this data here
 
 
-# jade write these
 # add yourself to a queue
 # delete yourself from the queue
 
-
-
 #need to let admins delete a machine from a building, will need to access mongodb for this
+
+# need form submissions for logging in and registering as well 
 
 @app.route('/api/machines', methods=['GET'])
 def get_machines():
