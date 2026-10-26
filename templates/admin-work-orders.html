@@ -1,0 +1,29 @@
+{% extends "admin-base.html" %}
+
+{% block title %}Work Orders{% endblock %}
+
+{% block content %}
+<h1>Work Orders</h1>
+
+{% for order in orders %}
+    <article>
+        <h2>{{ order.building }} – {{ order.machine_id }}</h2>
+        <p>{{ order.problem }}</p>
+        <p>Status: {{ order.status }}</p>
+
+        {% if order.status == "Open" %}
+            <form
+                action="{{ url_for('admin_complete_work_order',
+                                   order_id=order['_id']|string) }}"
+                method="POST"
+            >
+                <button type="submit">Mark as Completed</button>
+            </form>
+        {% elif order.completed_at %}
+            <p>Completed: {{ order.completed_at }} UTC</p>
+        {% endif %}
+    </article>
+{% else %}
+    <p>No work orders yet.</p>
+{% endfor %}
+{% endblock %}

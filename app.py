@@ -284,7 +284,140 @@ def get_users():
 
 
 
+@app.route("/admin/machines", methods=["GET", "POST"])
+@login_required
+def admin_machines():
+    if current_user.role != "admin":
+        abort(403)
 
+    buildings = ["Palladium", "Weinstein", "UHall"]
+    error = None
+
+    if request.method == "POST":
+        machine_id = request.form.get("machine_id", "").strip()
+        building = request.form.get("building", "").strip()
+        machine_type = request.form.get("type", "").strip()
+
+        if (
+            not machine_id
+            or building not in buildings
+            or machine_type not in ("Washer", "Dryer")
+        ):
+            error = "Enter a machine ID, building, and machine type."
+
+        elif db.machines.find_one({"machine_id": machine_id}):
+            error = "That machine ID already exists."
+
+        else:
+            db.machines.insert_one({
+                "machine_id": machine_id,
+                "building": building,
+                "type": machine_type,
+                "status": "Available",
+                "current_user": None,
+                "users_in_queue": []
+            })
+
+            flash("Machine added.")
+            return redirect(url_for("admin_machines"))
+
+    machines = list(
+        db.machines.find({}).sort([
+            ("building", 1),
+            ("machine_id", 1)
+        ])
+    )
+
+    return render_template(
+        "admin-machines.html",
+        machines=machines,
+        buildings=buildings,
+        error=error
+    ), 400 if error else 200
+
+
+@app.route("/admin/machines/<machine_key>/delete", methods=["POST"])
+@login_required
+def admin_delete_machine(machine_key):
+    if current_user.role != "admin":
+        abort(403)
+
+    if not ObjectId.is_valid(machine_key):
+        abort(404)
+
+    machine = db.machines.find_one({"_id": ObjectId(machine_key)})
+
+    if machine is None:
+        abort(404)
+
+    open_order = db.work_requests.find_one({
+        "machine_id": machine["machine_id"],
+        "building": machine["building"],
+        "status": "Open"
+    })
+
+    if open_order:
+        flash("Complete this machine's open work orders before deleting it.")
+        return redirect(url_for("admin_machines"))
+
+    result = db.machines.delete_one({
+        "_id": machine["_id"],
+        "status": {"$ne": "In-Use"},
+        "current_user": None,
+        "users_in_queue": {"$size": 0}
+    })
+
+    if result.deleted_count:
+        flash("Machine deleted.")
+    else:
+        flash("Cannot delete a machine that is in use or has a queue.")
+
+    return redirect(url_for("admin_machines"))
+
+
+@app.route("/admin/work-orders")
+@login_required
+def admin_work_orders():
+    if current_user.role != "admin":
+        abort(403)
+
+    orders = list(db.work_requests.find({}).sort("_id", -1))
+
+    return render_template(
+        "admin-work-orders.html",
+        orders=orders
+    )
+
+
+@app.route("/admin/work-orders/<order_id>/complete", methods=["POST"])
+@login_required
+def admin_complete_work_order(order_id):
+    if current_user.role != "admin":
+        abort(403)
+
+    if not ObjectId.is_valid(order_id):
+        abort(404)
+
+    order_key = ObjectId(order_id)
+
+    if db.work_requests.find_one({"_id": order_key}) is None:
+        abort(404)
+
+    result = db.work_requests.update_one(
+        {"_id": order_key, "status": "Open"},
+        {"$set": {
+            "status": "Completed",
+            "completed_at": datetime.now(timezone.utc),
+            "completed_by": current_user.id
+        }}
+    )
+
+    if result.modified_count:
+        flash("Work order marked as completed.")
+    else:
+        flash("This work order is already closed.")
+
+    return redirect(url_for("admin_work_orders"))
 
 if __name__ == '__main__':
     app.run(debug=True)
