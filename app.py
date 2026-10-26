@@ -137,8 +137,8 @@ def register():
 
 #page 3 of 6 - Buildings - (read/search)
 #laundry building home page (displays 3 building options)
-#@app.route('/building_home_page', methods=['GET'])
-#def machine_home_screen():
+@app.route('/building_home_page', methods=['GET'])
+def machine_home_screen():
     return render_template("building_home_page.html")
 
 #page 4 of 6 - machine list for building - (read)
