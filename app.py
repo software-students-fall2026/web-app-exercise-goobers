@@ -480,5 +480,11 @@ def admin_complete_work_order(order_id):
 
     return redirect(url_for("admin_work_orders"))
 
+@app.route("/logout", methods=["POST"])
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for("login_page"))
+
 if __name__ == '__main__':
     app.run(debug=True)
