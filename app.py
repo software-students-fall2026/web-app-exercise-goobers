@@ -207,16 +207,12 @@ def admin_machine_form_post():
 
 
 # be able to change status for machines
-# be able to change status for machines
 @app.route('/machines/<machine_id>/status', methods=['POST'])
 @login_required
 def change_machine_status(machine_id):
-    if current_user.role not in ("admin", "technician"):
-        abort(403)
-
     status = request.form.get("status", "").strip()
 
-    if status not in ("Available", "Out of Order"):
+    if status not in ("Available", "In-Use", "Out of Order"):
         abort(400, description="Choose a valid machine status.")
 
     machine = db.machines.find_one({"machine_id": machine_id})
@@ -224,26 +220,67 @@ def change_machine_status(machine_id):
     if machine is None:
         abort(404)
 
-    # don't overwrite a machine that someone is currently using
-    result = db.machines.update_one(
-        {
-            "_id": machine["_id"],
-            "current_user": None,
-            "status": {"$ne": "In-Use"}
-        },
-        {"$set": {"status": status}}
-    )
+    if current_user.role in ("admin", "technician"):
+        changes = {"status": status}
 
-    if result.matched_count == 0:
-        flash("This machine is in use. Release it before changing its status.")
-    else:
+        if status != "In-Use":
+            changes["current_user"] = None
+
+        db.machines.update_one(
+            {"_id": machine["_id"]},
+            {"$set": changes}
+        )
         flash("Machine status updated.")
+
+    elif current_user.role == "student":
+        if status == "In-Use":
+            # only claim a machine that is still available
+            result = db.machines.update_one(
+                {
+                    "_id": machine["_id"],
+                    "status": "Available",
+                    "current_user": None
+                },
+                {"$set": {
+                    "status": "In-Use",
+                    "current_user": current_user.id
+                }}
+            )
+
+            if result.matched_count:
+                flash("Machine claimed.")
+            else:
+                flash("This machine is no longer available.")
+
+        elif status == "Available":
+            # only the person using the machine can release it
+            result = db.machines.update_one(
+                {
+                    "_id": machine["_id"],
+                    "status": "In-Use",
+                    "current_user": current_user.id
+                },
+                {"$set": {
+                    "status": "Available",
+                    "current_user": None
+                }}
+            )
+
+            if result.matched_count:
+                flash("Machine released.")
+            else:
+                flash("You can only release a machine you claimed.")
+
+        else:
+            abort(403)
+
+    else:
+        abort(403)
 
     return redirect(url_for(
         "machine_in_building",
         building_name=machine["building"]
     ))
-
 
 
 # add yourself to a queue
