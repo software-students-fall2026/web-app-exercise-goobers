@@ -13,6 +13,38 @@
         <p role="status">{{ message }}</p>
     {% endfor %}
 
+    {% if current_user.is_authenticated
+        and current_user.role == "student" %}
+  
+      {% if machine.status == "Available" %}
+          <form
+              action="{{ url_for('change_machine_status',
+                                 machine_id=machine.machine_id) }}"
+              method="POST"
+          >
+              <input type="hidden" name="status" value="In-Use">
+              <button type="submit">Claim Machine</button>
+          </form>
+  
+      {% elif machine.status == "In-Use"
+              and machine.current_user == current_user.id %}
+          <form
+              action="{{ url_for('change_machine_status',
+                                 machine_id=machine.machine_id) }}"
+              method="POST"
+          >
+              <input type="hidden" name="status" value="Available">
+              <button type="submit">Release Machine</button>
+          </form>
+  
+      {% elif machine.status == "In-Use" %}
+          <p>Another person is using this machine.</p>
+      {% endif %}
+  
+  {% elif not current_user.is_authenticated %}
+      <a href="{{ url_for('login_page') }}">Sign in to claim a machine</a>
+  {% endif %}
+
     <main>
         <section class="machine-section">
             <h2>Machines</h2>
