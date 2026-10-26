@@ -119,6 +119,8 @@ def machine_in_building(building_name):
 @app.route('/admin/machine-form')
 @login_required
 def admin_machine_form():
+    if current_user.role != "admin":
+        abort(403)
 
     # we have the get the list of machines from mongodb first actually
     machines = list(db.machines.find({}))
