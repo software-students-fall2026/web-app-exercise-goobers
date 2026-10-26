@@ -424,7 +424,8 @@ def admin_machines():
         "admin-machines.html",
         machines=machines,
         buildings=buildings,
-        error=error
+        error=error,
+        search=search
     ), 400 if error else 200
 
 
