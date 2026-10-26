@@ -130,19 +130,37 @@ def admin_machine_form():
 
 #we need to let admins post too into this form
 @app.route('/admin/machine-form', methods=['POST'])
+@login_required
 def admin_machine_form_post():
-    building = request.form['building']
-    machine_id = request.form['machine_id']
-    problem = request.form['problem']
+    if current_user.role != "admin":
+        abort(403)
 
-    doc = {
+    building = request.form.get("building", "").strip()
+    machine_id = request.form.get("machine_id", "").strip()
+    problem = request.form.get("problem", "").strip()
+
+    machine = db.machines.find_one({
         "building": building,
-        "machine_id": machine_id,
+        "machine_id": machine_id
+    })
+
+    if machine is None or not problem:
+        machines = list(db.machines.find({}))
+        return render_template(
+            "work-request.html",
+            machines=machines,
+            error="Choose a matching machine and building, and describe the issue."
+        ), 400
+
+    db.work_requests.insert_one({
+        "building": machine["building"],
+        "machine_id": machine["machine_id"],
         "problem": problem,
         "status": "Open"
-    }
+    })
 
-    db.work_requests.insert_one(doc)
+    flash("Work request submitted.")
+    return redirect(url_for("admin_machine_form"))
 
     # look into how we can do this
     # we would need to get the list of machines and make sure we are hitting one that exists
