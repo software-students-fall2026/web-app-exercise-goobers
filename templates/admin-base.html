@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Admin{% endblock %}</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav aria-label="Admin navigation">
+        <a href="{{ url_for('admin_machines') }}">Manage Machines</a>
+        <a href="{{ url_for('admin_work_orders') }}">Work Orders</a>
+        <a href="{{ url_for('admin_machine_form') }}">Report an Issue</a>
+    </nav>
+
+    {% for message in get_flashed_messages() %}
+        <p role="status">{{ message }}</p>
+    {% endfor %}
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>
