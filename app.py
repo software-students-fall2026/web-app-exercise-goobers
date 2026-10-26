@@ -11,6 +11,8 @@ from flask_login import (
     login_required, login_user, logout_user
 )
 import pymongo
+from bson import ObjectId
+from datetime import datetime, timezone
 
 #Load .env file. File contains the MongoDB URI and name of the database that is used to connect to MongoDB.
 load_dotenv()
@@ -87,7 +89,7 @@ def login_page():
         login_user(User(user))
 
         if current_user.role == "admin":
-            return redirect(url_for("admin_machine_form"))
+            return redirect(url_for("admin_machines"))
 
         return redirect(url_for("machine_home_screen"))
 
@@ -279,6 +281,8 @@ def get_machines():
 def get_users():
     users = list(db.users.find({}, {"_id": 0}))
     return jsonify({"users": users})
+
+
 
 
 
