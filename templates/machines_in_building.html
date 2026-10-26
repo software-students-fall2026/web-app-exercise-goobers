@@ -81,6 +81,14 @@
                                     <button type="submit">Update Status</button>
                                 </form>
 
+                                <form
+                                    action="{{ url_for('logout') }}"
+                                    method="POST"
+                                    class="signout-fixed"
+                                >
+                                    <button type="submit">Sign Out</button>
+                                </form>
+
                             {% elif current_user.role == "student" %}
                                 {% if machine.status == "Available" %}
                                     <form
