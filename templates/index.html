@@ -2,14 +2,15 @@
 <html>
 <head>
     <title>Laundry App</title>
-    <h1>Welcome to Team Goobers Laundry App!</h1>
-    <p>Select your building to get started.</p>
 </head>
 <body>
+    <h1>Welcome to Team Goobers Laundry App!</h1>
+    <p>Select your building to get started.</p>
     <ul>
         <li><a href="{{ url_for('machine_in_building', building_name='Palladium') }}">Palladium</a></li>
         <li><a href="{{ url_for('machine_in_building', building_name='Weinstein') }}">Weinstein</a></li>
         <li><a href="{{ url_for('machine_in_building', building_name='UHall') }}">UHall</a></li>
     </ul>
+    <p>Are you an admin? <a href="{{ url_for('login_page') }}">Sign In Here</a></p>
 </body>
 </html>
