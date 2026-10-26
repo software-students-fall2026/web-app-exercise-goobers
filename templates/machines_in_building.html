@@ -10,8 +10,7 @@
 <body>
     <a href="{{ url_for('home_screen') }}" class="back-link">
         &larr; All Buildings
-    </a>
-
+    </a>    
     {% if current_user.is_authenticated %}
         <p>
             Signed in as {{ current_user.id }}
@@ -42,6 +41,7 @@
 
             <div class="machine-grid">
                 {% for machine in machines %}
+                        {% set queue = machine.users_in_queue or [] %}
                     <div class="machine-card">
                         <h3>Machine {{ machine.machine_id }}</h3>
 
@@ -55,6 +55,7 @@
                                 {{ machine.status }}
                             </span>
                         </p>
+                        <p class="queue-info">{{ queue|length }} waiting in line</p>
 
                         {% if current_user.is_authenticated %}
                             {% if current_user.role in ("admin", "technician") %}
@@ -116,10 +117,25 @@
                                     </form>
 
                                 {% elif machine.status == "In-Use" %}
-                                    <p>Another person is using this machine.</p>
+                            <p>Another person is using this machine.</p>
+
+                            {% if current_user.id in queue %}
+                                <p>You are #{{ queue.index(current_user.id) + 1 }} in line.</p>
+                                <button type="button" class="queue-btn"
+                                        data-machine-id="{{ machine.machine_id }}"
+                                        data-method="DELETE">
+                                    Leave Queue
+                                </button>
+                            {% else %}
+                                <button type="button" class="queue-btn"
+                                        data-machine-id="{{ machine.machine_id }}"
+                                        data-method="POST">
+                                    Join Queue
+                                </button>
                                 {% endif %}
                             {% endif %}
                         {% endif %}
+                    {% endif %}
                     </div>
                 {% else %}
                     <p>No machines found in this building.</p>
@@ -127,5 +143,33 @@
             </div>
         </section>
     </main>
+    {% set uid = current_user.id if current_user.is_authenticated else none %}
+    <script>
+    const CURRENT_USER_ID = {{ uid|tojson }};    document.querySelectorAll(".queue-btn").forEach((button) => {
+        button.addEventListener("click", async () => {
+            const machineId = button.dataset.machineId;
+            const method = button.dataset.method;
+
+            try {
+                const response = await fetch(
+                    `/machines/${encodeURIComponent(machineId)}/queue`,
+                    {
+                        method: method,
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ user_id: CURRENT_USER_ID })
+                    }
+                );
+
+                if (response.ok) {
+                    window.location.reload();
+                } else {
+                    alert("Could not update the queue. Please try again.");
+                }
+            } catch (error) {
+                alert("Network error. Please try again.");
+            }
+        });
+    });
+</script>
 </body>
 </html>
