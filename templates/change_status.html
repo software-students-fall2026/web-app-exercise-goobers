@@ -35,7 +35,41 @@
     </form>
 
     <script>
-        //script tbd
+        // Which machines to show for each choice
+        const showFor = {
+            claim:   (status) => status === "Available",
+            unclaim: (status) => status === "In-Use",
+            broken:  (status) => true //bc any machine can be reported as broken
+        };
+
+        const select = document.getElementById("machine_id");
+        const issueBox = document.getElementById("issue-box");
+        const problem = document.getElementById("problem");
+        const noMachines = document.getElementById("no-machines");
+
+        function updateForm() {
+            const action = document.querySelector('input[name="action"]:checked').value;
+            let firstVisible = null;
+
+            for (const option of select.options) {
+                const show = showFor[action](option.dataset.status);
+                option.hidden = !show;
+                option.disabled = !show;
+                if (show && !firstVisible) firstVisible = option;
+            }
+
+            select.value = firstVisible ? firstVisible.value : "";
+            noMachines.hidden = firstVisible !== null;
+
+            const isBroken = action === "broken";
+            issueBox.hidden = !isBroken;
+            problem.required = isBroken;
+        }
+
+        document.querySelectorAll('input[name="action"]').forEach((radio) => {
+            radio.addEventListener("change", updateForm);
+        });
+        updateForm();
     </script>
 </body>
 </html>
