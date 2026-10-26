@@ -94,8 +94,43 @@ def login_page():
     return render_template("login.html")
 
 #page 2 of 6 - Create Account Screen - (create)
-@app.route("/register")
+@app.route("/register", methods=["GET", "POST"])
 def register():
+    if request.method == "POST":
+        username = request.form.get("username", "").strip()
+        phone = request.form.get("phone", "").strip()
+
+        if not username or not phone:
+            return render_template(
+                "create-account.html",
+                error="Please enter a username and phone number."
+            ), 400
+
+        existing_user = db.user.find_one({
+            "$or": [
+                {"user_id": username},
+                {"phone": phone}
+            ]
+        })
+
+        if existing_user:
+            return render_template(
+                "create-account.html",
+                error="That username or phone number is already registered."
+            ), 400
+
+        user = {
+            "user_id": username,
+            "name": username,
+            "phone": phone,
+            "role": "student"
+        }
+
+        db.user.insert_one(user)
+        login_user(User(user))
+
+        return redirect(url_for("machine_home_screen"))
+
     return render_template("create-account.html")
 
 #page 3 of 6 - Buildings - (read/search)
