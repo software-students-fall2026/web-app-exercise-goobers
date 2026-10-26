@@ -46,8 +46,16 @@ def home_screen():
     return render_template("index.html")
 
 #***replace '/' with this***
-@app.route("/login")
+@app.route("/login", methods=["GET", "POST"])
 def login_page():
+    if request.method == "POST":
+        # 1. Read email/password from request.form
+        # 2. Find the user in MongoDB
+        # 3. Verify their password
+        # 4. Store their user ID in a session
+        # 5. Redirect to the appropriate page
+        pass
+
     return render_template("login.html")
 
 #page 2 of 6 - Create Account Screen - (create)
