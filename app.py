@@ -407,8 +407,14 @@ def admin_machines():
             flash("Machine added.")
             return redirect(url_for("admin_machines"))
 
+    search = request.args.get("search", "").strip()
+
+    query = {}
+    if search:
+        query["machine_id"] = search
+
     machines = list(
-        db.machines.find({}).sort([
+        db.machines.find(query).sort([
             ("building", 1),
             ("machine_id", 1)
         ])
@@ -418,7 +424,8 @@ def admin_machines():
         "admin-machines.html",
         machines=machines,
         buildings=buildings,
-        error=error
+        error=error,
+        search=search
     ), 400 if error else 200
 
 
