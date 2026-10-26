@@ -66,7 +66,8 @@ def machine_home_screen():
 #dynamic route for the building name 
 @app.route('/building/<building_name>')
 def machine_in_building(building_name):
-    return render_template("machines_in_building.html", building_name=building_name)
+    machines = list(db.machines.find({"building": building_name}))
+    return render_template("machines_in_building.html", building_name=building_name, machines=machines)
 
 #still need 2 more pages - 1 for edit, 1 for delete.
 
