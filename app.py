@@ -12,7 +12,7 @@ from flask_login import (
 )
 import pymongo
 
-#Load .evn file. File contains the MongoDB URI and name of the database that is used to connect to MongoDB.
+#Load .env file. File contains the MongoDB URI and name of the database that is used to connect to MongoDB.
 load_dotenv()
 
 #Initialize Flask app
@@ -22,10 +22,25 @@ app.config["SECRET_KEY"] = os.environ["SECRET_KEY"]
 login_manager = LoginManager(app)
 login_manager.login_view = "login_page"
 
-
 #connect to MongoDB
 client = pymongo.MongoClient(os.getenv("MONGO_URI"), tlsCAFile=certifi.where())
 db = client[os.getenv("MONGO_DBNAME")]
+
+#add user class and loader
+class User(UserMixin):
+    def __init__(self, document):
+        self.id = document["user_id"]
+        self.role = document.get("role", "student")
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    document = db.user.find_one({"user_id": user_id})
+
+    if document is None:
+        return None
+
+    return User(document)
 
 #seed creates a defualt set of users and machines into the database if they don't already exist. 
 #takes from machines.json and users.json files. 
