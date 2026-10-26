@@ -5,6 +5,17 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
+    {% if current_user.is_authenticated %}
+        <form
+            action="{{ url_for('logout') }}"
+            method="POST"
+            class="signout-fixed"
+        >
+            <button type="submit">Sign Out</button>
+        </form>
+    {% else %}
+        <a href="{{ url_for('login_page') }}">Sign In</a>
+    {% endif %}
     <h1>Welcome to Team Goobers Laundry App!</h1>
     <p>Select your building to get started.</p>
     <ul>

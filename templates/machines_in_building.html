@@ -1,40 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ building_name }} Laundry Room</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <a href="{{ url_for('home_screen') }}" class="back-link">
-    &larr; All Buildings
-        </a>
+        &larr; All Buildings
+    </a>
+
+    {% if current_user.is_authenticated %}
+        <p>
+            Signed in as {{ current_user.id }}
+            ({{ current_user.role }})
+        </p>
+        <form action="{{ url_for('logout') }}" method="POST">
+            <button type="submit">Sign Out</button>
+        </form>
+    {% else %}
+        <p>
+            <a href="{{ url_for('login_page') }}">Sign In</a>
+            or
+            <a href="{{ url_for('register') }}">Create an Account</a>
+            to claim a machine.
+        </p>
+    {% endif %}
+
     <h1>{{ building_name }} Laundry Room</h1>
-    <p>Select a machine to see its current status.</p>
-    <p><a href="{{ url_for('change-status', building_name=building_name) }}">Claim, unclaim, or report a machine</a></p>
+    <p>View machine availability and current status.</p>
+
+    {% for message in get_flashed_messages() %}
+        <p role="status">{{ message }}</p>
+    {% endfor %}
 
     <main>
         <section class="machine-section">
-            <h2>Available Machines</h2>
+            <h2>Machines</h2>
+
             <div class="machine-grid">
-            {% for machine in machines %}
-                <div class="machine-card">
-                <h3>Machine {{ machine.machine_id }}</h3>
-                <p class="machine-status">
-                Status:
-                    <span class="status-label
-                    {% if machine.status == 'Available' %} available
-                    {% elif machine.status == 'In-Use' %} in-use
-                    {% elif machine.status == 'Out of Order' %} out-of-order
-                    {% endif %}"> {{ machine.status }}
-                    </span>
-                 </p>
-                </div>
+                {% for machine in machines %}
+                    <div class="machine-card">
+                        <h3>Machine {{ machine.machine_id }}</h3>
+
+                        <p class="machine-status">
+                            Status:
+                            <span class="status-label
+                                {% if machine.status == 'Available' %} available
+                                {% elif machine.status == 'In-Use' %} in-use
+                                {% elif machine.status == 'Out of Order' %} out-of-order
+                                {% endif %}">
+                                {{ machine.status }}
+                            </span>
+                        </p>
+
+                        {% if current_user.is_authenticated %}
+                            {% if current_user.role in ("admin", "technician") %}
+                                <form
+                                    action="{{ url_for('change_machine_status',
+                                                       machine_id=machine.machine_id) }}"
+                                    method="POST"
+                                >
+                                    <label for="status-{{ loop.index }}">
+                                        Change Status
+                                    </label>
+
+                                    <select
+                                        id="status-{{ loop.index }}"
+                                        name="status"
+                                        required
+                                    >
+                                        <option value="">Select a status</option>
+                                        <option value="Available">Available</option>
+                                        <option value="In-Use">In Use</option>
+                                        <option value="Out of Order">Out of Order</option>
+                                    </select>
+
+                                    <button type="submit">Update Status</button>
+                                </form>
+
+                                <form
+                                    action="{{ url_for('logout') }}"
+                                    method="POST"
+                                    class="signout-fixed"
+                                >
+                                    <button type="submit">Sign Out</button>
+                                </form>
+
+                            {% elif current_user.role == "student" %}
+                                {% if machine.status == "Available" %}
+                                    <form
+                                        action="{{ url_for('change_machine_status',
+                                                           machine_id=machine.machine_id) }}"
+                                        method="POST"
+                                    >
+                                        <input type="hidden"
+                                               name="status"
+                                               value="In-Use">
+                                        <button type="submit">Claim Machine</button>
+                                    </form>
+
+                                {% elif machine.status == "In-Use"
+                                        and machine.current_user == current_user.id %}
+                                    <form
+                                        action="{{ url_for('change_machine_status',
+                                                           machine_id=machine.machine_id) }}"
+                                        method="POST"
+                                    >
+                                        <input type="hidden"
+                                               name="status"
+                                               value="Available">
+                                        <button type="submit">Release Machine</button>
+                                    </form>
+
+                                {% elif machine.status == "In-Use" %}
+                                    <p>Another person is using this machine.</p>
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+                    </div>
                 {% else %}
                     <p>No machines found in this building.</p>
                 {% endfor %}
             </div>
-
-
-        </section> 
-
+        </section>
     </main>
-
 </body>
 </html>
