@@ -108,8 +108,30 @@ def admin_machine_form_post():
     # do something fabulous with this data here
 
 
-# jade write these
 # add yourself to a queue
+@app.route('/machines/<machine_id>/queue', methods=['POST'])
+def add_to_queue(machine_id):
+    #so get the user, get the machine that they click, go to the queue that we have, append, then update mongodb mahcine doc
+
+    data = request.get_json()
+    user_id = data['user_id']
+
+    machine = db.machines.find_one({"machine_id": machine_id})
+
+    queue = machine.get("users_in_queue", [])
+
+    queue.append(user_id)
+
+    #have to update it. 
+    db.machines.update_one(
+        {"machine_id": machine_id},
+        {"$set": {"users_in_queue": queue}}
+    )
+
+    return jsonify({"message": "user joined queue"})
+
+
+
 # delete yourself from the queue
 
 
