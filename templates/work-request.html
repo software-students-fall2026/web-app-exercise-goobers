@@ -1,5 +1,6 @@
 <head>
     <title>Report a Machine Issue</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <a href="{{ url_for('home_screen') }}">← Back to home</a>
@@ -11,6 +12,7 @@
                 <option value="{{ machine.machine_id }}">{{ machine.building }} – {{ machine.machine_id }}</option>
             {% endfor %}
         </select>
+        <br>
     
         <label for="building">Building</label>
         <select id="building" name="building" required>
@@ -18,10 +20,12 @@
             <option value="Weinstein">Weinstein</option>
             <option value="UHall">UHall</option>
         </select>
-    
+        <br>
+
         <label for="problem">What's wrong?</label>
         <textarea id="problem" name="problem" required></textarea>
-    
+        <br>
+        
         <button type="submit">Submit Request</button>
     </form>
 </body>    
