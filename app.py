@@ -78,7 +78,7 @@ def admin_machine_form():
 
     # we have the get the list of machines from mongodb first actually
     machines = list(db.machines.find({}))
-    return render_template("admin-machine-form.html", machines=machines) 
+    return render_template("work-request.html", machines=machines) 
 
 
 
