@@ -117,6 +117,7 @@ def machine_in_building(building_name):
 
 #routing for the admins now
 @app.route('/admin/machine-form')
+@login_required
 def admin_machine_form():
 
     # we have the get the list of machines from mongodb first actually
