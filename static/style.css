@@ -18,3 +18,21 @@ body {
     padding: 8px 16px;
     border-radius: 6px;
   }
+
+  .signout-fixed {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 1000;
+    margin: 0;
+    width: auto;
+}
+
+.signout-fixed button {
+    margin: 0;
+    width: auto;
+}
+
+body {
+    padding-top: 80px;
+}
