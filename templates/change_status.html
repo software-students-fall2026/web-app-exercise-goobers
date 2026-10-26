@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Update a Machine – {{ building_name }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <a href="{{ url_for('machine_in_building', building_name=building_name) }}">&larr; Back to {{ building_name }}</a>
+    <h1>Update a Machine in {{ building_name }}</h1>
+
+    <form action="{{ url_for('change_status', building_name=building_name) }}" method="POST">
+
+        <p><strong>What do you want to do?</strong></p>
+        <label><input type="radio" name="action" value="claim" checked> Claim a machine</label>
+        <label><input type="radio" name="action" value="unclaim"> Unclaim a machine</label>
+        <label><input type="radio" name="action" value="broken"> Report a broken machine</label>
+
+        <label for="machine_id">Machine</label>
+        <select id="machine_id" name="machine_id" required>
+            {% for machine in machines %}
+                <option value="{{ machine.machine_id }}" data-status="{{ machine.status }}">
+                    {{ machine.machine_id }} ({{ machine.status }})
+                </option>
+            {% endfor %}
+        </select>
+        <p id="no-machines" hidden>No machines match this option right now.</p>
+
+        <div id="issue-box" hidden>
+            <label for="problem">Explain the issue</label>
+            <textarea id="problem" name="problem" rows="4"></textarea>
+        </div>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+        //script tbd
+    </script>
+</body>
+</html>
