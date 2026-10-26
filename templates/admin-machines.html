@@ -1,0 +1,66 @@
+{% extends "admin-base.html" %}
+
+{% block title %}Manage Machines{% endblock %}
+
+{% block content %}
+<h1>Manage Machines</h1>
+
+{% if error %}
+    <p role="alert">{{ error }}</p>
+{% endif %}
+
+<h2>Add a Machine</h2>
+
+<form action="{{ url_for('admin_machines') }}" method="POST">
+    <p>
+        <label for="machine_id">Unique Machine ID</label>
+        <input id="machine_id" name="machine_id"
+               placeholder="Washer-W3" required>
+    </p>
+
+    <p>
+        <label for="building">Building</label>
+        <select id="building" name="building" required>
+            <option value="">Select a building</option>
+            {% for building in buildings %}
+                <option value="{{ building }}">{{ building }}</option>
+            {% endfor %}
+        </select>
+    </p>
+
+    <p>
+        <label for="type">Machine Type</label>
+        <select id="type" name="type" required>
+            <option value="">Select a type</option>
+            <option value="Washer">Washer</option>
+            <option value="Dryer">Dryer</option>
+        </select>
+    </p>
+
+    <button type="submit">Add Machine</button>
+</form>
+
+<h2>Existing Machines</h2>
+<p>
+    Machines cannot be deleted while in use, queued,
+    or associated with open work orders.
+</p>
+
+{% for machine in machines %}
+    <article>
+        <h3>{{ machine.building }} — {{ machine.machine_id }}</h3>
+        <p>{{ machine.type }} | Status: {{ machine.status }}</p>
+
+        <form
+            action="{{ url_for('admin_delete_machine',
+                               machine_key=machine['_id']|string) }}"
+            method="POST"
+            onsubmit="return confirm('Delete this machine? This cannot be undone.');"
+        >
+            <button type="submit">Delete Machine</button>
+        </form>
+    </article>
+{% else %}
+    <p>No machines found.</p>
+{% endfor %}
+{% endblock %}
