@@ -75,12 +75,21 @@ def home_screen():
 @app.route("/login", methods=["GET", "POST"])
 def login_page():
     if request.method == "POST":
-        # 1. Read email/password from request.form
-        # 2. Find the user in MongoDB
-        # 3. Verify their password
-        # 4. Store their user ID in a session
-        # 5. Redirect to the appropriate page
-        pass
+        phone = request.form.get("phone", "").strip()
+        user = db.user.find_one({"phone": phone}) if phone else None
+
+        if user is None:
+            return render_template(
+                "login.html",
+                error="No account found with that phone number."
+            ), 400
+
+        login_user(User(user))
+
+        if current_user.role == "admin":
+            return redirect(url_for("admin_machine_form"))
+
+        return redirect(url_for("machine_home_screen"))
 
     return render_template("login.html")
 
