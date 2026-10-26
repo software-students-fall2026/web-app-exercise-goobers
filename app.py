@@ -2,7 +2,7 @@ import json
 import os
 import certifi
 from dotenv import load_dotenv
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, jsonify, render_template, request, redirect, session, url_for
 import pymongo
 
 #Load .evn file. File contains the MongoDB URI and name of the database that is used to connect to MongoDB.
