@@ -4,6 +4,13 @@
 <body>
     <a href="{{ url_for('home_screen') }}">← Back to home</a>
     <h1>Report a Machine Issue</h1>
+    {% for message in get_flashed_messages() %}
+        <p role="status">{{ message }}</p>
+    {% endfor %}
+
+    {% if error %}
+        <p role="alert">{{ error }}</p>
+    {% endif %}
     <form action="{{ url_for('admin_machine_form_post') }}" method="POST">
         <label for="machine">Machine</label>
         <select id="machine" name="machine_id" required>
