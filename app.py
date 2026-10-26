@@ -170,21 +170,17 @@ def admin_machine_form_post():
     if current_user.role != "admin":
         abort(403)
 
-    building = request.form.get("building", "").strip()
     machine_id = request.form.get("machine_id", "").strip()
     problem = request.form.get("problem", "").strip()
 
-    machine = db.machines.find_one({
-        "building": building,
-        "machine_id": machine_id
-    })
+    machine = db.machines.find_one({"machine_id": machine_id})
 
     if machine is None or not problem:
         machines = list(db.machines.find({}))
         return render_template(
             "work-request.html",
             machines=machines,
-            error="Choose a matching machine and building, and describe the issue."
+            error="Choose a valid machine and describe the issue."
         ), 400
 
     db.work_requests.insert_one({
