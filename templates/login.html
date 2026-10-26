@@ -3,7 +3,7 @@
 </head>
 <body>
     <main class="login-container">
-        <div class="logo" aria-hidden="true"> [logo] </div>
+        <div class="logo" aria-hidden="true">[logo]</div>
 
         <h1>Welcome Back!</h1>
         <p class="subtitle">
@@ -11,28 +11,22 @@
         </p>
 
         <form action="/login" method="POST">
-            <label for="username">Username</label>
-            <input
-                type="username"
-                id="username"
-                name="username"
-                placeholder="abc1234"
-                autocomplete="email"
-                required
-            >
-
-            <label for="tel">Phone Number</label>
+            <label for="phone">Phone Number</label>
             <input
                 type="tel"
                 id="phone"
                 name="phone"
-                placeholder="123-456-7890"
+                placeholder="212-555-0100"
                 autocomplete="tel"
                 required
             >
 
             <button type="submit">Sign In</button>
         </form>
+
+        {% if error %}
+            <p role="alert">{{ error }}</p>
+        {% endif %}
 
         <p class="signup">
             New here? <a href="/register">Create an account</a>

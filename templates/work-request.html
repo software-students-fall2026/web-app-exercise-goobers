@@ -5,27 +5,29 @@
 <body>
     <a href="{{ url_for('home_screen') }}">← Back to home</a>
     <h1>Report a Machine Issue</h1>
+
+    {% for message in get_flashed_messages() %}
+        <p role="status">{{ message }}</p>
+    {% endfor %}
+
+    {% if error %}
+        <p role="alert">{{ error }}</p>
+    {% endif %}
+
     <form action="{{ url_for('admin_machine_form_post') }}" method="POST">
-        <label for="machine">Machine</label>
+        <label for="machine">Building and Machine</label>
         <select id="machine" name="machine_id" required>
+            <option value="">Select a machine</option>
             {% for machine in machines %}
-                <option value="{{ machine.machine_id }}">{{ machine.building }} – {{ machine.machine_id }}</option>
+                <option value="{{ machine.machine_id }}">
+                    {{ machine.building }} – {{ machine.machine_id }}
+                </option>
             {% endfor %}
         </select>
-        <br>
-    
-        <label for="building">Building</label>
-        <select id="building" name="building" required>
-            <option value="Palladium">Palladium</option>
-            <option value="Weinstein">Weinstein</option>
-            <option value="UHall">UHall</option>
-        </select>
-        <br>
 
         <label for="problem">What's wrong?</label>
         <textarea id="problem" name="problem" required></textarea>
-        <br>
-        
+
         <button type="submit">Submit Request</button>
     </form>
-</body>    
+</body>
