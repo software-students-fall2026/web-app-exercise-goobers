@@ -2,7 +2,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-   <a href="/building_home_page" class="back-link">
+    <a href="{{ url_for('home_screen') }}" class="back-link">
     &larr; All Buildings
         </a>
     <h1>{{ building_name }} Laundry Room</h1>
