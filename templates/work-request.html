@@ -6,6 +6,11 @@
     <a href="{{ url_for('home_screen') }}">← Back to home</a>
     <h1>Report a Machine Issue</h1>
 
+    <nav>
+        <a href="{{ url_for('admin_machines') }}">Manage Machines</a>
+        <a href="{{ url_for('admin_work_orders') }}">View Work Orders</a>
+    </nav>
+
     {% for message in get_flashed_messages() %}
         <p role="status">{{ message }}</p>
     {% endfor %}

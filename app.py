@@ -152,6 +152,7 @@ def machine_in_building(building_name):
 #still need 2 more pages - 1 for edit, 1 for delete.
 
 
+
 #routing for the admins now
 @app.route('/admin/machine-form')
 @login_required
@@ -203,6 +204,22 @@ def admin_machine_form_post():
     #message = request.form['fmessage']
     
     # do something fabulous with this data here
+
+
+# be able to change status for machines
+@app.route('/machines/<machine_id>/status', methods=['POST'])
+def change_machine_status(machine_id):
+
+    data = request.get_json()
+    status = data['status']
+
+    db.machines.update_one(
+        {"machine_id": machine_id},
+        {"$set": {"status": status}}
+    )
+
+    return jsonify({"message": "machine status updated"})
+
 
 
 # add yourself to a queue

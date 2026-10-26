@@ -14,12 +14,8 @@
 <form action="{{ url_for('admin_machines') }}" method="POST">
     <p>
         <label for="machine_id">Unique Machine ID</label>
-        <input
-            id="machine_id"
-            name="machine_id"
-            placeholder="Washer-W3"
-            required
-        >
+        <input id="machine_id" name="machine_id"
+               placeholder="Washer-W3" required>
     </p>
 
     <p>
@@ -52,7 +48,7 @@
 
 {% for machine in machines %}
     <article>
-        <h3>{{ machine.building }} – {{ machine.machine_id }}</h3>
+        <h3>{{ machine.building }} — {{ machine.machine_id }}</h3>
         <p>{{ machine.type }} | Status: {{ machine.status }}</p>
 
         <form
