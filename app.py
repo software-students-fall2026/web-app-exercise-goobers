@@ -207,18 +207,42 @@ def admin_machine_form_post():
 
 
 # be able to change status for machines
+# be able to change status for machines
 @app.route('/machines/<machine_id>/status', methods=['POST'])
+@login_required
 def change_machine_status(machine_id):
+    if current_user.role not in ("admin", "technician"):
+        abort(403)
 
-    data = request.get_json()
-    status = data['status']
+    status = request.form.get("status", "").strip()
 
-    db.machines.update_one(
-        {"machine_id": machine_id},
+    if status not in ("Available", "Out of Order"):
+        abort(400, description="Choose a valid machine status.")
+
+    machine = db.machines.find_one({"machine_id": machine_id})
+
+    if machine is None:
+        abort(404)
+
+    # don't overwrite a machine that someone is currently using
+    result = db.machines.update_one(
+        {
+            "_id": machine["_id"],
+            "current_user": None,
+            "status": {"$ne": "In-Use"}
+        },
         {"$set": {"status": status}}
     )
 
-    return jsonify({"message": "machine status updated"})
+    if result.matched_count == 0:
+        flash("This machine is in use. Release it before changing its status.")
+    else:
+        flash("Machine status updated.")
+
+    return redirect(url_for(
+        "machine_in_building",
+        building_name=machine["building"]
+    ))
 
 
 
