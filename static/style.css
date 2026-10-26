@@ -1,0 +1,20 @@
+body {
+    max-width: 640px;
+    margin: 40px auto;
+    padding: 0 16px;
+    background: #eff6ff;
+    color: #1f2937;
+    font-family: system-ui, Arial, sans-serif;
+  }
+  
+  h1, h2, h3, a { color: #1e3a8a; }
+  
+  button, input, select, textarea { font: inherit; }
+  
+  button {
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+  }
