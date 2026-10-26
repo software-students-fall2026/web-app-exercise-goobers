@@ -19,6 +19,9 @@ load_dotenv()
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ["SECRET_KEY"]
 
+login_manager = LoginManager(app)
+login_manager.login_view = "login_page"
+
 
 #connect to MongoDB
 client = pymongo.MongoClient(os.getenv("MONGO_URI"), tlsCAFile=certifi.where())
