@@ -91,7 +91,7 @@ def login_page():
         if current_user.role == "admin":
             return redirect(url_for("admin_machines"))
 
-        return redirect(url_for("machine_home_screen"))
+        return redirect(url_for("home_screen"))
 
     return render_template("login.html")
 
@@ -131,14 +131,14 @@ def register():
         db.user.insert_one(user)
         login_user(User(user))
 
-        return redirect(url_for("machine_home_screen"))
+        return redirect(url_for("home_screen"))
 
     return render_template("create-account.html")
 
 #page 3 of 6 - Buildings - (read/search)
 #laundry building home page (displays 3 building options)
-@app.route('/building_home_page', methods=['GET'])
-def machine_home_screen():
+#@app.route('/building_home_page', methods=['GET'])
+#def machine_home_screen():
     return render_template("building_home_page.html")
 
 #page 4 of 6 - machine list for building - (read)
