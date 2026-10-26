@@ -205,7 +205,29 @@ def admin_machine_form_post():
     
     # do something fabulous with this data here
 
+def promote_next_in_queue(machine_id):
+    # if a machine is free and people are waiting, give it to the first in line
+    machine = db.machines.find_one({"machine_id": machine_id})
+    if machine is None:
+        return
 
+    queue = machine.get("users_in_queue", [])
+    if machine.get("status") != "Available" or not queue:
+        return
+
+    next_user = queue[0]
+    db.machines.update_one(
+        {
+            "_id": machine["_id"],
+            "status": "Available",
+            "current_user": None,
+            "users_in_queue.0": next_user
+        },
+        {
+            "$set": {"status": "In-Use", "current_user": next_user},
+            "$pop": {"users_in_queue": -1}
+        }
+    )
 # be able to change status for machines
 @app.route('/machines/<machine_id>/status', methods=['POST'])
 @login_required
@@ -230,6 +252,8 @@ def change_machine_status(machine_id):
             {"_id": machine["_id"]},
             {"$set": changes}
         )
+        if status == "Available":
+            promote_next_in_queue(machine_id)
         flash("Machine status updated.")
 
     elif current_user.role == "student":
@@ -267,6 +291,7 @@ def change_machine_status(machine_id):
             )
 
             if result.matched_count:
+                promote_next_in_queue(machine_id)
                 flash("Machine released.")
             else:
                 flash("You can only release a machine you claimed.")
