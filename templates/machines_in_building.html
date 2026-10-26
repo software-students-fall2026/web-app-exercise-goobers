@@ -5,39 +5,64 @@
     <a href="{{ url_for('home_screen') }}" class="back-link">
         &larr; All Buildings
     </a>
+
     <h1>{{ building_name }} Laundry Room</h1>
-    <p>Select a machine to see its current status.</p>
+    <p>View machine availability and current status.</p>
 
     {% for message in get_flashed_messages() %}
         <p role="status">{{ message }}</p>
     {% endfor %}
-    
+
     <main>
         <section class="machine-section">
-            <h2>Available Machines</h2>
+            <h2>Machines</h2>
+
             <div class="machine-grid">
-            {% for machine in machines %}
-                <div class="machine-card">
-                <h3>Machine {{ machine.machine_id }}</h3>
-                <p class="machine-status">
-                Status:
-                    <span class="status-label
-                    {% if machine.status == 'Available' %} available
-                    {% elif machine.status == 'In-Use' %} in-use
-                    {% elif machine.status == 'Out of Order' %} out-of-order
-                    {% endif %}"> {{ machine.status }}
-                    </span>
-                 </p>
-                </div>
+                {% for machine in machines %}
+                    <div class="machine-card">
+                        <h3>Machine {{ machine.machine_id }}</h3>
+
+                        <p class="machine-status">
+                            Status:
+                            <span class="status-label
+                                {% if machine.status == 'Available' %} available
+                                {% elif machine.status == 'In-Use' %} in-use
+                                {% elif machine.status == 'Out of Order' %} out-of-order
+                                {% endif %}">
+                                {{ machine.status }}
+                            </span>
+                        </p>
+
+                        {% if current_user.is_authenticated
+                              and current_user.role in ("admin", "technician") %}
+                            <form
+                                action="{{ url_for('change_machine_status',
+                                                   machine_id=machine.machine_id) }}"
+                                method="POST"
+                            >
+                                <label for="status-{{ loop.index }}">
+                                    Change Status
+                                </label>
+
+                                <select
+                                    id="status-{{ loop.index }}"
+                                    name="status"
+                                    required
+                                >
+                                    <option value="">Select a status</option>
+                                    <option value="Available">Available</option>
+                                    <option value="Out of Order">Out of Order</option>
+                                </select>
+
+                                <button type="submit">Update Status</button>
+                            </form>
+                        {% endif %}
+                    </div>
                 {% else %}
                     <p>No machines found in this building.</p>
                 {% endfor %}
             </div>
-
-
-        </section> 
-
+        </section>
     </main>
-
 </body>
 </html>
