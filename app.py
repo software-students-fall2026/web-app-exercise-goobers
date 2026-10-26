@@ -2,7 +2,14 @@ import json
 import os
 import certifi
 from dotenv import load_dotenv
-from flask import Flask, jsonify, render_template, request, redirect, session, url_for
+from flask import (
+    Flask, abort, flash, jsonify, redirect,
+    render_template, request, url_for
+)
+from flask_login import (
+    LoginManager, UserMixin, current_user,
+    login_required, login_user, logout_user
+)
 import pymongo
 
 #Load .evn file. File contains the MongoDB URI and name of the database that is used to connect to MongoDB.
@@ -10,6 +17,7 @@ load_dotenv()
 
 #Initialize Flask app
 app = Flask(__name__)
+app.config["SECRET_KEY"] = os.environ["SECRET_KEY"]
 
 
 #connect to MongoDB
